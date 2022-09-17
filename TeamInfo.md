@@ -10,10 +10,10 @@
 | Captain     |  mayanks4@illinois.edu       |
 | Member1     |      Saurabh Rohit Shetty    |
 | Member1     |   	 shetty5@illinois.edu    |
-| Member2     |                              |
-| Member2     |                              |
-| Member3     |                              |
-| Member3     |                              |
+| Member2     |Hardik Fulfagar                              |
+| Member2     |hsf3@illinois.edu                              |
+| Member3     |              Rugved Bongale                |
+| Member3     |                 bongale2@illinois.edu             |
 
 ## Project Information
 
