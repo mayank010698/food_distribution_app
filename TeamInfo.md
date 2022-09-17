@@ -8,8 +8,8 @@
 | TeamName    |         dabest               |
 | Captain     |       Mayank Shrivastava     |
 | Captain     |  mayanks4@illinois.edu       |
-| Member1     |                              |
-| Member1     |   		             |
+| Member1     |      Saurabh Rohit Shetty    |
+| Member1     |   	 shetty5@illinois.edu    |
 | Member2     |                              |
 | Member2     |                              |
 | Member3     |                              |
