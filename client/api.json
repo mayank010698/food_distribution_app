@@ -1,0 +1,84 @@
+[
+    {
+        "route": "/login",
+        "method":"POST",
+        "inputData":{
+            "name": "name",
+            "password":"password",
+            "kind":"user OR provider"
+        },
+        "response": {
+            "message":"OK",
+            "data": {
+                "kind":"user OR provider",
+                "user": "user or provider object"
+            }
+        } 
+    },
+    {
+        "route": "/getFoodKind",
+        "method":"POST",
+        "inputData":{},
+        "response": {
+            "message":"OK",
+            "data": {
+                "foodTypeArray": [{"FoodID":"2131","Kind":"VEG BREAKFAST"},{"FoodID":"2131","Kind":"VEG BREAKFAST"}]
+            }
+        } 
+    },
+    {
+        "route": "/getOffers",
+        "method":"POST",
+        "inputData":{
+            "searchInput": "This is optional field."
+        },
+        "response": {
+            "message":"OK",
+            "data": {
+                "offers": "List of offers"
+            }
+        } 
+    },
+    {
+        "route": "/getOfferDetail",
+        "inputData":{
+            "ProviderID":"",
+            "FoodID":""
+        },
+        "response": {
+            "message":"OK",
+            "data": {
+                "quantityAvailable": "",
+                "Provider":{"ProviderId":"", "ProviderName":""},
+                "FoodKind": {"FoodID":"2131","Kind":"VEG BREAKFAST"}
+            }
+        }
+    },
+    {
+        "route": "/placeOrder",
+        "inputData":{
+            "ProviderID":"",
+            "UserID":"",
+            "FoodID":"",
+            "quantity":""
+        },
+        "response": {
+            "message":"OK",
+            "data": {
+                "orderDetails":"Send order details"
+            }
+        }
+    },
+    {
+        "route":"/getOrders",
+        "inputData": {
+            "UserID":""
+        },
+        "response": {
+            "message":"OK",
+            "data": {
+                "orders": "List of orders by specific user(user id in input)"
+            }
+        }
+    }
+]
