@@ -91,6 +91,7 @@ def provider_info(provider_id,curdate='2022-04-02'):
         print(query)
         cur = cnx.cursor()
         cur.execute(query)
+        cnx.commit()
         cnx.close()
 
         return " query executed successfully"
