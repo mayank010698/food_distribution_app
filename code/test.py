@@ -24,12 +24,18 @@ def executeQuery(query):
     cur.execute(query)
 
     # Print databases
-    row = cur.fetchall()
-    print("Testing show tables")
-    print(row)
+    body = cur.fetchall()
+
     # Close connection
     cnx.close()
-    return json.dumps(row)
+
+    final_data = []
+    for row in body:
+        d = []
+        for item in row:
+            d.append(str(item).strip())
+        final_data.append(d)
+    return final_data
 
 @app.route('/',methods=['POST','GET'])
 def redirect_to_provider():
@@ -39,8 +45,6 @@ def redirect_to_provider():
         pwd = dat["password"]
 
         query = "select * from Provider where ProviderID=\"{}\" and Password=\"{}\"".format(provider_id,pwd)
-
-
 
         cnx = mysql.connector.connect(
         host="127.0.0.1",
@@ -58,9 +62,9 @@ def redirect_to_provider():
         cnx.close()
         print(provider_id)
         if not row:
-            return "login failed"
+            return json.dumps("login failed")
         else:
-            return redirect(url_for('provider_info',provider_id="P100"))
+            return redirect(url_for('provider_info',provider_id=provider_id))
 
     
 @app.route('/search')
@@ -137,6 +141,50 @@ def provider_info(provider_id,curdate='2022-04-02'):
 
     return d
 
+@app.route("/getFoodKind")
+def getFoodKind():
+    query = "SELECT * FROM FoodType"
+    final_data = executeQuery(query)
+
+    data = {}
+    data["response"]={}
+    data["response"]["data"]={}
+    data["response"]["message"] = "OK"
+    data["response"]["data"]["columns"]=["FoodID","Kind"]
+    data["response"]["data"]["rows"] = final_data
+
+
+    return json.dumps(data)
+
+@app.route("/getOffers",methods=['POST'])
+def getOffers():
+    inp = request.json["inputData"]
+    provider_id = inp["searchInput"]
+
+    query = "select * from Offers where ProviderID=\""  + provider_id +"\""
+    final_data = executeQuery(query)
+
+    data = {}
+    data["response"]={}
+    data["response"]["data"]={}
+    data["response"]["message"] = "OK"
+    data["response"]["data"]["columns"]=["ProviderID","FoodID","Item_Description","ODate","Quantity"]
+    data["response"]["data"]["rows"] = final_data
+
+    return json.dumps(data)
+
+
+
+
+
+
+
+
+
+    
+
+
+        
 
 
 
