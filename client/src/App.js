@@ -8,6 +8,7 @@ import FoodProviderMain from './components/FoodProviderMain';
 import AddFoodForm from './components/AddFoodForm';
 import SelfOffers from "./components/SelfOffers";
 import FoodWastage from "./components/FoodWastage";
+import Feedback from "./components/Feedback";
 
 function App() {
   // return <AddFoodForm />
@@ -22,8 +23,9 @@ function App() {
           <Route index path="/" element={<Main />} />
           <Route path="food-prover-main" element={<FoodProviderMain />} />
           <Route path="food-wastage" element={<FoodWastage />} />
+          <Route path="feedback" element={<Feedback />} />
           <Route path="self-offers/:id" element={<SelfOffers />} />
-          <Route path="offer/:id" element={<OrderDetails />} />
+          <Route path="offer/:id1/:id2" element={<OrderDetails />} />
           <Route path="food-wastage" element={<Stats />} />
           <Route path="auth" element={<Auth />} />
           <Route path="/food-form" element={<AddFoodForm />}>

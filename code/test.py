@@ -13,8 +13,8 @@ def insertData(query):
         host="127.0.0.1",
         port=3306,
         user="root",
-        password="12341234",
-        database="project")
+        password="root",
+        database="dabest")
 
     # Get a cursor
     cur = cnx.cursor()
@@ -37,8 +37,8 @@ def executeQuery(query):
         host="127.0.0.1",
         port=3306,
         user="root",
-        password="12341234",
-        database="project")
+        password="root",
+        database="dabest")
 
     # Get a cursor
     cur = cnx.cursor()
@@ -127,6 +127,7 @@ def login():
 
 @app.route("/getWaste",methods=['POST'])
 def getWaste():
+    print("called getWaste")
     inp = request.json["inputData"]
     provider_id = inp["providerID"]
 

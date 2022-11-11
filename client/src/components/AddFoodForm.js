@@ -10,11 +10,15 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
-
+import { foodOptionsApi, submitFoodForm } from './functions';
+import { useNavigate  } from "react-router-dom";
 
 function AddFoodForm() {
     const [name, setName] = React.useState('');
     const [age, setAge] = React.useState('');
+    const [kinds, setKinds] = React.useState([])
+    const [quantity, setQuantity] = React.useState(1)
+    const navigate = useNavigate();
 
     const handleChange2 = (event) => {
         setAge(event.target.value);
@@ -23,6 +27,37 @@ function AddFoodForm() {
     const handleChange = (event) => {
         setName(event.target.value);
     };
+
+    const handleSubmit = async () => {
+        console.log(age, name, quantity)
+        // age -> food type id
+        // name -> item description
+        // qunatity
+        let providerid = "P1"//window.location.href.split("/")[window.location.href.split("/").length-1]
+        console.log("providerid",providerid)
+
+        const data = {
+            "inputData": {
+                providerID: providerid || "p1",
+                foodID: age,
+                item_description: name,
+                quantity: quantity
+            }
+        }
+        const response = await submitFoodForm(data)
+        navigate('/self-offers/p1')
+        console.log(response)
+    }
+
+    React.useEffect(() =>  {
+        async function getFoodTypes() {
+            const response = await foodOptionsApi()
+            console.log(response)
+            setKinds(response)
+        }
+        getFoodTypes()
+    }, [])
+
   return (
     <Container>
         <div className='main__main'>
@@ -44,7 +79,7 @@ function AddFoodForm() {
                 <div className='horizontal-width'>
                     <FormControl className='input-medium-width' variant="standard">
                         <InputLabel htmlFor="component-simple">Quantity</InputLabel>
-                        <Input id="component-simple" type='number'/>
+                        <Input id="component-simple" type='number' value={quantity} onChange={(e) => setQuantity(e.target.value)}/>
                     </FormControl>
                 </div>
 
@@ -58,19 +93,17 @@ function AddFoodForm() {
                     label="Food type"
                     onChange={handleChange2}
                     >
-                    <MenuItem value="">
-                        <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={10}>Veg</MenuItem>
-                    <MenuItem value={20}>Non Veg</MenuItem>
-                    <MenuItem value={30}>Some food type</MenuItem>
+                    
+                    {kinds.map(k => {
+                        return <MenuItem value={k[0]}>{k[1]}</MenuItem>
+                    })}
                     </Select>
                     <FormHelperText>With label + helper text</FormHelperText>
                 </FormControl>
                 </div>
                     
                 </Box>
-                <Button variant="contained" sx={{ mt: 3, mb: 2 }}>Submit</Button>
+                <Button onClick={handleSubmit} variant="contained" sx={{ mt: 3, mb: 2 }}>Submit</Button>
                 
         </div>
     </Container>

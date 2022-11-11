@@ -11,6 +11,7 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button'
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getFoodWastageData } from './functions';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -32,25 +33,39 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
+// function createData(name, calories, fat, carbs, protein) {
+//     return { name, calories, fat, carbs, protein };
+// }
   
-const rows = [
-createData('Frozen yoghurt', 159, "VEG", 24, 4.0),
-createData('Ice cream sandwich', 237, "VEG", 37, 4.3),
-createData('Eclair', 262, "VEG", 24, 6.0),
-createData('Cupcake', 305, "VEG", 67, 4.3),
-createData('Gingerbread', 356, "VEG", 49, 3.9),
-];
+// const rows = [
+// createData('Frozen yoghurt', 159, "VEG", 24, 4.0),
+// createData('Ice cream sandwich', 237, "VEG", 37, 4.3),
+// createData('Eclair', 262, "VEG", 24, 6.0),
+// createData('Cupcake', 305, "VEG", 67, 4.3),
+// createData('Gingerbread', 356, "VEG", 49, 3.9),
+// ];
 
 function FoodWastage() {
   const [searchInput, setSearchInput] = useState("")
   const [offers, setOffers] = useState([])
   const [kinds, setKinds] = useState(['VEG breakfast 20','Non Veg lunch 10','Vegan breakfast 44','VEG meal 22','Non Veg 31','Vegan 11'])
+  const [rows, setRows] = useState([])
+  const [cols, setCols] = useState([])
 
   useEffect(() => {
     // setOffers([])
+    async function getData() {
+      const data = {
+        "inputData": {
+          providerID: localStorage.getItem("UserID") || "p1"
+        }
+      }
+      const response = await getFoodWastageData(data)
+      console.log(response)
+      setRows(response.rows)
+      setCols(response.columns)
+    }
+    getData()
   },[])
 
 
@@ -63,24 +78,24 @@ function FoodWastage() {
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
                     <TableRow>
-                        <StyledTableCell>Item Description</StyledTableCell>
-                        <StyledTableCell align="right">Quantity available</StyledTableCell>
-                        <StyledTableCell align="right">Food Type</StyledTableCell>
-                        <StyledTableCell align="right">ODate</StyledTableCell>
-                        <StyledTableCell align="right">Link</StyledTableCell>
+                        <StyledTableCell>{cols[0]}</StyledTableCell>
+                        <StyledTableCell align="right">{cols[1]}</StyledTableCell>
+                        <StyledTableCell align="right">{cols[2]}</StyledTableCell>
+                        <StyledTableCell align="right">{cols[3]}</StyledTableCell>
+                        <StyledTableCell align="right">{cols[4]}</StyledTableCell>
                     </TableRow>
                     </TableHead>
                     <TableBody>
                     {rows.map((row) => (
                         <StyledTableRow key={row.name}>
                         <StyledTableCell component="th" scope="row">
-                            {row.name}
+                            {row[0]}
                         </StyledTableCell>
-                        <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                        <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                        <StyledTableCell align="right">{row.carbs}</StyledTableCell>
+                        <StyledTableCell align="right">{row[1]}</StyledTableCell>
+                        <StyledTableCell align="right">{row[2]}</StyledTableCell>
+                        <StyledTableCell align="right">{row[3]}</StyledTableCell>
                         <StyledTableCell align="right">
-                          <Link to={`/offer/1`}>Link</Link>  
+                         {row[4]}  
                         </StyledTableCell>
                         </StyledTableRow>
                     ))}

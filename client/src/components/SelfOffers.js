@@ -11,6 +11,7 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button'
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getSelfOffers } from './functions';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,9 +49,23 @@ function SelfOffers() {
   const [searchInput, setSearchInput] = useState("")
   const [offers, setOffers] = useState([])
   const [kinds, setKinds] = useState(['VEG breakfast 20','Non Veg lunch 10','Vegan breakfast 44','VEG meal 22','Non Veg 31','Vegan 11'])
+  const [rows, setRows] = useState([])
+  const [cols, setCols] = useState([])
 
   useEffect(() => {
     // setOffers([])
+    async function getData() {
+      const data = {
+        "inputData": {
+          "searchInput": "p1"
+        }
+      }
+      const response = await getSelfOffers(data)
+      console.log(response.rows)
+      setRows(response.rows)
+      setCols(response.cols)
+    }
+    getData()
   },[])
 
 
@@ -63,24 +78,24 @@ function SelfOffers() {
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
                     <TableRow>
-                        <StyledTableCell>Item Description</StyledTableCell>
-                        <StyledTableCell align="right">Quantity available</StyledTableCell>
-                        <StyledTableCell align="right">Food Type</StyledTableCell>
-                        <StyledTableCell align="right">ODate</StyledTableCell>
-                        <StyledTableCell align="right">Link</StyledTableCell>
+                        <StyledTableCell>{cols[0]}</StyledTableCell>
+                        <StyledTableCell align="right">{cols[1]}</StyledTableCell>
+                        <StyledTableCell align="right">{cols[2]}</StyledTableCell>
+                        <StyledTableCell align="right">{cols[3]}</StyledTableCell>
+                        <StyledTableCell align="right">{cols[4]}</StyledTableCell>
                     </TableRow>
                     </TableHead>
                     <TableBody>
                     {rows.map((row) => (
                         <StyledTableRow key={row.name}>
                         <StyledTableCell component="th" scope="row">
-                            {row.name}
+                            {row[0]}
                         </StyledTableCell>
-                        <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                        <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                        <StyledTableCell align="right">{row.carbs}</StyledTableCell>
+                        <StyledTableCell align="right">{row[1]}</StyledTableCell>
+                        <StyledTableCell align="right">{row[2]}</StyledTableCell>
+                        <StyledTableCell align="right">{row[3]}</StyledTableCell>
                         <StyledTableCell align="right">
-                          <Link to={`/offer/1`}>Link</Link>  
+                          {row[4]}
                         </StyledTableCell>
                         </StyledTableRow>
                     ))}

@@ -14,6 +14,8 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { useEffect, useState } from 'react';
+import { getOfferDetail, placeOrder } from './functions';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,17 +37,56 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-  
-const rows = [
-createData('Provider Name', 'PAR Dining', 6.0, 24, 4.0),
-createData('Item Description', 'Lorm ipsum Lorm ipsum Lorm ipsum Lorm ipsum Lorm ipsum Lorm ipsum Lorm ipsum Lorm ipsum Lorm ipsum Lorm ipsum Lorm ipsum Lorm ipsum ', 9.0, 37, 4.3)
-];
-
 function OrderDetails() {
-    // const offerId = window.location.href()
+  const [quantity, setQuantity] = useState(1)
+  const [foodKind, setFoodKind] = useState()
+  const [provider, setProvider] = useState()
+
+  const handleSubmit = async () => {
+    let urlList = window.location.href.split("/")
+      let ProviderID = urlList[urlList.length-2]
+      let FoodID = urlList[urlList.length-1]
+    const data = {
+      "inputData": {
+        ProviderID: ProviderID,
+        FoodID: FoodID,
+        quantity: quantity,
+        UserID: localStorage.getItem("UserID") || "U1"
+      }
+    }
+    console.log("$$$$")
+    console.log(data)
+    const response = await placeOrder(data)
+    if(response.message == "OK"){
+      alert("Order placed successfully")
+    }
+  }
+  
+    useEffect(() => {
+      // setOffers([])
+      let urlList = window.location.href.split("/")
+      let ProviderID = urlList[urlList.length-2]
+      let FoodID = urlList[urlList.length-1]
+      console.log("ProviderID",ProviderID)
+      async function getData() {
+        const data = {
+          "inputData": {
+            "ProviderID": ProviderID,
+            "FoodID": FoodID
+          }
+        }
+
+        console.log("Calling offer detil")
+        console.log(data)
+        const response = await getOfferDetail(data)
+        console.log(response)
+        setQuantity(response.quantityAvailable)
+        setFoodKind(response.FoodKind)
+        setProvider(response.Provider)
+      }
+      getData()
+    },[])
+
   return (
     <Container>
         <div className='main__main'>
@@ -62,22 +103,29 @@ function OrderDetails() {
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                    {rows.map((row) => (
-                        <StyledTableRow key={row.name}>
-                        <StyledTableCell component="th" scope="row">
-                            {row.name}
-                        </StyledTableCell>
-                        <StyledTableCell>{row.calories}</StyledTableCell>
-                        </StyledTableRow>
-                    ))}
+                    
+                      <StyledTableRow>
+                      <StyledTableCell component="th" scope="row">
+                          Name
+                      </StyledTableCell>
+                      <StyledTableCell>{provider ? provider.ProviderName: "Loading"}</StyledTableCell>
+                      </StyledTableRow>
+
+                      <StyledTableRow>
+                      <StyledTableCell component="th" scope="row">
+                          Food Type
+                      </StyledTableCell>
+                      <StyledTableCell>{foodKind ? foodKind.Kind: "Loading"}</StyledTableCell>
+                      </StyledTableRow>
+                    
                     <StyledTableRow key={"quantity"}>
                         <StyledTableCell component="th" scope="row">
                             Quantity
                         </StyledTableCell>
                         <StyledTableCell>
                             <FormControl className='input-medium-width' variant="standard">
-                                <InputLabel htmlFor="component-simple">Quantity</InputLabel>
-                                <Input id="component-simple" type='number'/>
+                                {/* <InputLabel htmlFor="component-simple">quantity</InputLabel> */}
+                                <Input id="component-simple" type='number' value={quantity} onChange={(e) => setQuantity(e.target.value)}/>
                             </FormControl>
                         </StyledTableCell>
                         </StyledTableRow>
@@ -86,7 +134,7 @@ function OrderDetails() {
             </TableContainer>
 
             <br></br>
-            <Button variant="contained">Place Order</Button>
+            <Button onClick={handleSubmit} variant="contained">Place Order</Button>
         </div>
     </Container>
   );

@@ -50,13 +50,16 @@ export default function Auth() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     let data = {
-      name: name,
-      password: password,
-      kind: userKind
+      "inputData": {
+        name: name,
+        password: password,
+        kind: userKind
+      }
     }
     console.log(data);
     if(isLogin) {
       const response = await loginApi(data)
+      console.log(response)
       navigate("/");
     }
     else{
@@ -91,7 +94,7 @@ export default function Auth() {
           <Typography component="h1" variant="h5">
           {isLogin ? "Log In" : "Sign Up"}
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -186,7 +189,7 @@ export default function Auth() {
               type="submit"
               fullWidth
               variant="contained"
-              onClick={() => handleSubmit()}
+              onClick={(e) => handleSubmit(e)}
               sx={{ mt: 3, mb: 2 }}
             >
               {isLogin ? "Sign In" : "Log In"}
