@@ -33,18 +33,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-// function createData(name, calories, fat, carbs, protein) {
-//     return { name, calories, fat, carbs, protein };
-// }
-  
-// const rows = [
-// createData('Frozen yoghurt', 159, "VEG", 24, 4.0),
-// createData('Ice cream sandwich', 237, "VEG", 37, 4.3),
-// createData('Eclair', 262, "VEG", 24, 6.0),
-// createData('Cupcake', 305, "VEG", 67, 4.3),
-// createData('Gingerbread', 356, "VEG", 49, 3.9),
-// ];
-
 function Main() {
   const [searchInput, setSearchInput] = useState("")
   const [offers, setOffers] = useState([])

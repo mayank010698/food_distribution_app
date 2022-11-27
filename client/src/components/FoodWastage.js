@@ -57,7 +57,7 @@ function FoodWastage() {
     async function getData() {
       const data = {
         "inputData": {
-          providerID: localStorage.getItem("UserID") || "p1"
+          providerID: localStorage.getItem("userID") || "p1"
         }
       }
       const response = await getFoodWastageData(data)

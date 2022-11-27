@@ -43,7 +43,7 @@ function Feedback() {
         async function getFeedbacks() {
             const data = {
                 "inputData": {
-                    "UserID": "U87"//localStorage.getItem("UserID") || "U1"    
+                    "UserID": localStorage.getItem("userID") || "U87"    
                 }
             }
             const response = await getFeedbacksApi(data)

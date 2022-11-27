@@ -3,6 +3,11 @@ import { CLIENT_URL } from './../const'
 
 export const registerApi = async(data)=> {
     const result = await axios.post(`${CLIENT_URL}/register`,data)
+    const userRow = result.data.response.data.rows
+    console.log(userRow)
+    // TODO
+    localStorage.setItem('userKind', result.data.response.data.userKind)
+    localStorage.setItem('userID', userRow[0][0])
 
     return result
 }
@@ -15,7 +20,9 @@ export const loginApi = async(data)=> {
     // JSON.stringify, JSON.parse
     const userRow = result.data.response.data.rows
     console.log(userRow)
-    localStorage.setItem('UserID', userRow[0][0])
+    // TODO
+    localStorage.setItem('userKind', result.data.response.data.userKind)
+    localStorage.setItem('userID', userRow[0][0])
 
     // localStorage.setItem('token', result.data.token)
     return result
@@ -64,6 +71,7 @@ export const deleteFeedback = async(data) => {
 export const placeOrder = async(data)=> {
     console.log("calling submitOrder now")
     const result = await axios.post(`${CLIENT_URL}/placeOrder`, data)
+    console.log(result)
     return result.data
 }
 

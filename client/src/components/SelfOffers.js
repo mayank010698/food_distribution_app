@@ -57,7 +57,7 @@ function SelfOffers() {
     async function getData() {
       const data = {
         "inputData": {
-          "searchInput": "p1"
+          "searchInput": localStorage.getItem("userID") || "p1"
         }
       }
       const response = await getSelfOffers(data)

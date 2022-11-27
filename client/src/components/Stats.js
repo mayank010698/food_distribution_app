@@ -1,82 +1,87 @@
-import Container from '@mui/material/Container';
-import TextField from '@mui/material/TextField';
-import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+// import "./styles.css";
+import React from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend
+} from "recharts";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
+const data = [
+  {
+    name: "Page A",
+    uv: 6000,
+    pv: 200,
+    z: 0
   },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
+  {
+    name: "Page B",
+    uv: 3000,
+    pv: 1398,
+    z: 600
   },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-      border: 0,
-    },
-}));
-
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-  
-const rows = [
-createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-createData('Eclair', 262, 16.0, 24, 6.0),
-createData('Cupcake', 305, 3.7, 67, 4.3),
-createData('Gingerbread', 356, 16.0, 49, 3.9),
+  {
+    name: "Page C",
+    uv: 2000,
+    pv: 9800,
+    z: 200
+  },
+  {
+    name: "Page D",
+    uv: 2780,
+    pv: 3908,
+    z: 400
+  },
+  {
+    name: "Page E",
+    uv: 1890,
+    pv: 4800,
+    z: 100
+  },
+  {
+    name: "Page F",
+    uv: 2390,
+    pv: 3800,
+    z: 1000
+  },
+  {
+    name: "Page G",
+    uv: 3490,
+    pv: 4300,
+    z: 300
+  }
 ];
 
 function Stats() {
   return (
-    <Container>
-        <div className='main__main'>
-
-            <h1>Food Wastage</h1>
-            
-
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                    <TableHead>
-                    <TableRow>
-                        <StyledTableCell>Dessert (100g serving)</StyledTableCell>
-                        <StyledTableCell align="right">Calories</StyledTableCell>
-                        <StyledTableCell align="right">Fat&nbsp;(g)</StyledTableCell>
-                        <StyledTableCell align="right">Carbs&nbsp;(g)</StyledTableCell>
-                        <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
-                    </TableRow>
-                    </TableHead>
-                    <TableBody>
-                    {rows.map((row) => (
-                        <StyledTableRow key={row.name}>
-                        <StyledTableCell component="th" scope="row">
-                            {row.name}
-                        </StyledTableCell>
-                        <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                        <StyledTableCell align="right">{row.fat}</StyledTableCell>
-                        <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                        <StyledTableCell align="right">{row.protein}</StyledTableCell>
-                        </StyledTableRow>
-                    ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </div>
-    </Container>
+    <LineChart
+      width={500}
+      height={300}
+      data={data}
+      margin={{
+        top: 5,
+        right: 30,
+        left: 20,
+        bottom: 5
+      }}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip />
+      <Legend />
+      <Line
+        type="monotone"
+        dataKey="pv"
+        stroke="#8884d8"
+        activeDot={{ r: 8 }}
+      />
+      <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+      <Line type="monotone" dataKey="z" stroke="#82ca9d" />
+    </LineChart>
   );
 }
 

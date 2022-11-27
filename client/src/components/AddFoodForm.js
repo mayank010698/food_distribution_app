@@ -34,18 +34,22 @@ function AddFoodForm() {
         // name -> item description
         // qunatity
         let providerid = "P1"//window.location.href.split("/")[window.location.href.split("/").length-1]
+        if(localStorage.getItem("userID")) {
+            providerid = localStorage.getItem("userID")
+        }
+        
         console.log("providerid",providerid)
 
         const data = {
             "inputData": {
-                providerID: providerid || "p1",
+                providerID: providerid,
                 foodID: age,
                 item_description: name,
                 quantity: quantity
             }
         }
         const response = await submitFoodForm(data)
-        navigate('/self-offers/p1')
+        navigate('/self-offers/'+providerid)
         console.log(response)
     }
 

@@ -51,7 +51,7 @@ function OrderDetails() {
         ProviderID: ProviderID,
         FoodID: FoodID,
         quantity: quantity,
-        UserID: localStorage.getItem("UserID") || "U1"
+        UserID: localStorage.getItem("userID") || "U1"
       }
     }
     console.log("$$$$")
@@ -67,7 +67,7 @@ function OrderDetails() {
       let urlList = window.location.href.split("/")
       let ProviderID = urlList[urlList.length-2]
       let FoodID = urlList[urlList.length-1]
-      console.log("ProviderID",ProviderID)
+      console.log("ProviderID",ProviderID,"FoodID",FoodID)
       async function getData() {
         const data = {
           "inputData": {
