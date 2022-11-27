@@ -10,10 +10,9 @@ app = Flask(__name__)
 # Connect to server
 def insertData(query):
     cnx = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
+        host="34.173.238.55",
         user="root",
-        password="root",
+        password="12341234",
         database="dabest")
 
     # Get a cursor
@@ -34,10 +33,9 @@ def insertData(query):
 
 def executeQuery(query):
     cnx = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
+        host="34.173.238.55",
         user="root",
-        password="root",
+        password="12341234",
         database="dabest")
 
     # Get a cursor
