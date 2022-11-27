@@ -6,29 +6,6 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 CORS(app)
 
-def executeQuery_hardik(query):
-    cnx = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
-        user="root",
-        password="root",
-        database="dabest")
-
-    # Get a cursor
-    cur = cnx.cursor()
-
-    # Execute a query
-
-    cur.execute(query)
-
-    # Print databases
-    row = cur.fetchall()
-    print("Testing show tables")
-    print(row)
-    # Close connection
-    cnx.close()
-    return row
-
 def executeQuery(query):
     cnx = mysql.connector.connect(
         host="127.0.0.1",
@@ -325,7 +302,7 @@ def placeOrder():
 
     query="""
     UPDATE Offers
-    SET Quantity=Quantity-{}
+    SET CurQuantity=CurQuantity-{}
     WHERE FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-13'
     """.format(str(int(quantity)),food_id,provider_id)
     
@@ -372,7 +349,7 @@ def searchfooditem():
     description=data['inputData']['description']
     query="""
     SELECT * FROM Offers 
-    WHERE Item_Description LIKE '%{}%' and Date(ODate)='2020-12-13' and Quantity>0 limit 200;
+    WHERE Item_Description LIKE '%{}%' and Date(ODate)='2020-12-13' and CurQuantity>0 limit 200;
     """.format(description)
     a=executeQuery(query)
     response={}
