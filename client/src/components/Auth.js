@@ -64,14 +64,20 @@ export default function Auth() {
     }
     else{
       data = {
-        ...data,
-        phone,
-        email,
-        social,
-        zip,
-        address
+        "inputData": {
+          "name": name,
+          "password":password,
+          "kind": userKind,
+          "email": email,
+          "PhoneNumber": phone,
+          "socialHandle": social,
+          "address": address,
+          "zipcode": zip
+        }
       }
       const response = await registerApi(data)
+      console.log(response)
+      navigate("/");
     }
 
   };

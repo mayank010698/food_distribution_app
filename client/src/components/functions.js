@@ -2,9 +2,7 @@ import axios from 'axios'
 import { CLIENT_URL } from './../const'
 
 export const registerApi = async(data)=> {
-    return
-    
-    const result = await axios.post(`${CLIENT_URL}/api/register`,data)
+    const result = await axios.post(`${CLIENT_URL}/register`,data)
 
     return result
 }
