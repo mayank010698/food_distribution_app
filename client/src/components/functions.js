@@ -77,6 +77,13 @@ export const getFeedbacksApi = async(data)=> {
     return result.data.response.data
 }
 
+export const getOrdersApi = async(data)=> {
+    const result = await axios.post(`${CLIENT_URL}/getOrders`,data)
+    console.log(result)
+    return result.data.response.data
+}
+
+
 export const deleteFeedback = async(data) => {
     const result = await axios.post(`${CLIENT_URL}/deleteFeedback`,data)
     console.log(result)

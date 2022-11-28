@@ -67,11 +67,12 @@ def getWaste():
 
 
 
-@app.route("/getOrder",methods=['POST'])                # READ
+@app.route("/getOrders",methods=['POST'])                # READ
 def getOrder():
     inp = request.json["inputData"]
-    user_id = inp["UserID"]
-    query = "SELECT * FROM Orders WHERE UserID ="+user_id
+    user_id = inp["userID"]
+    query = "SELECT * FROM Orders WHERE UserID='"+user_id+"'"
+    print(query)
     
     final_data = executeQuery(query)
 
@@ -81,7 +82,7 @@ def getOrder():
     data["response"]["message"] = "OK"
     data["response"]["data"]["columns"]=["OrderID","UserID","ProviderID","FoodID","Quantity","ODate"]
     data["response"]["data"]["rows"] = final_data
-
+    print(data)
     return json.dumps(data)
 
 
@@ -105,7 +106,7 @@ def getOffers():                                            # READ
 @app.route("/getOffersAll",methods=['POST'])
 def getOffersAll():                                         # READ
 
-    query = "select ProviderID,FoodID,Item_Description,ODate, CurQuantity from Offers where Date(ODate)='2020-12-13' and CurQuantity>0 limit 200 ;"
+    query = "select ProviderID,FoodID,Item_Description,ODate, CurQuantity from Offers where Date(ODate)='2020-12-14' and CurQuantity>0 limit 200 ;"
     final_data = executeQuery(query)
 
     data = {}
@@ -360,7 +361,7 @@ def getOfferDetail():
     query="""
     SELECT p.ProviderID, p.Name, o.CurQuantity, o.Item_Description
     FROM Offers o JOIN Provider p on o.ProviderID=p.ProviderID
-    WHERE o.ProviderID='{}' AND o.FoodID='{}' AND DATE(o.ODate)="2020-12-13";
+    WHERE o.ProviderID='{}' AND o.FoodID='{}' AND DATE(o.ODate)="2020-12-14";
     """.format(provider_id,food_id)
 
     b=executeQuery(query)
@@ -418,11 +419,11 @@ def placeOrder():
              {},
             '{}'
         )
-    """.format(str(int(countdetails2[0])+1),user_id,provider_id,food_id,quantity,"2020-12-13 01:48:52")
+    """.format(str(int(countdetails2[0])+1),user_id,provider_id,food_id,quantity,"2020-12-14 01:48:52")
     insertData(query)
 
     query="""SELECT Quantity from Offers 
-    where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-13'
+    where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
     """.format(food_id,provider_id)
     print(query)
 
@@ -432,7 +433,7 @@ def placeOrder():
     query="""
     UPDATE Offers
     SET CurQuantity=CurQuantity-{}
-    WHERE FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-13'
+    WHERE FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
     """.format(str(int(quantity)),food_id,provider_id)
     
 
@@ -441,7 +442,7 @@ def placeOrder():
     insertData(query)
     
     query="""SELECT Quantity from Offers 
-    where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-13'
+    where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
     """.format(food_id,provider_id)
     
     print('Line 336',executeQuery(query))
@@ -481,7 +482,7 @@ def searchfooditem():
     description=data['inputData']['description']
     query="""
     SELECT ProviderId, FoodId, Item_Description, CurQuantity FROM Offers 
-    WHERE Item_Description LIKE '%{}%' and Date(ODate)='2020-12-13' and CurQuantity>0 limit 200;
+    WHERE Item_Description LIKE '%{}%' and Date(ODate)='2020-12-14' and CurQuantity>0 limit 200;
     """.format(description)
     a=executeQuery(query)
     response={}
@@ -500,7 +501,7 @@ def searchfooditemByKind():
     kindID=data['inputData']['kindID']
     query="""
     SELECT ProviderId, FoodId, Item_Description, CurQuantity FROM Offers 
-    WHERE FoodId='{}' and Date(ODate)='2020-12-13' and CurQuantity>0 limit 200;
+    WHERE FoodId='{}' and Date(ODate)='2020-12-14' and CurQuantity>0 limit 200;
     """.format(kindID)
     a=executeQuery(query)
     response={}
