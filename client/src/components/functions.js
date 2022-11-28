@@ -32,9 +32,14 @@ export const searchApi = async(data)=> {
     // return
     console.log("Will call search next")
     const result = await axios.post(`${CLIENT_URL}/search`,data)
-    console.log("Just called searchApi")
-    const rows = result.data.response
-    console.log(rows)
+    return result
+}
+
+export const searchByKindApi = async(data)=> {
+    // return
+    console.log("Will call searchByKind next")
+    const result = await axios.post(`${CLIENT_URL}/searchByKind`,data)
+    console.log(result)
     return result
 }
 

@@ -372,4 +372,23 @@ def searchfooditem():
     return b
 
 
+@app.route('/searchByKind',methods=['POST'])                  # Search
+def searchfooditemByKind():
+    data=request.json
+    kindID=data['inputData']['kindID']
+    query="""
+    SELECT ProviderId, FoodId, Item_Description, CurQuantity FROM Offers 
+    WHERE FoodId='{}' and Date(ODate)='2020-12-13' and CurQuantity>0 limit 200;
+    """.format(kindID)
+    a=executeQuery(query)
+    response={}
+    response['message']="OK"
+    response['data']={}
+    response['data']['columns']=['ProviderId','FoodId','Item_Description','Quantity']
+    response['data']['rows']=a
+    b={}
+    b['response']=response
+    return b
+
+
 app.run(host='0.0.0.0', port='8000', debug=True)
