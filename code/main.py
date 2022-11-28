@@ -198,6 +198,127 @@ def foodOptions():                                                  # COMPLEX QU
 
         return data
 
+#Register API
+@app.route('/register',methods=['POST'])
+def register():
+    inp = request.json["inputData"]
+    name = inp["name"]
+    pwd = inp["password"]
+    kind = inp["kind"]
+    email = inp["email"]
+    PhoneNumber=inp["PhoneNumber"]
+    socialhandle=inp["SocialHandle"]
+    address=inp["Address"]
+    zipcode=inp["ZipCode"]
+    print(name, pwd, kind,email,PhoneNumber, socialhandle,address,zipcode)
+    
+    #Getting cid
+    q1="""
+    SELECT Count(*)
+    FROM Details
+    """
+    q1_output=executeQuery(q1)
+    print(q1_output)
+    cid=int(q1_output[0][0])+1
+
+
+    #Inserting into Details
+    print("Inserting values into details:",cid,email,PhoneNumber,socialhandle,address,zipcode)
+    # return None
+    query1="""
+    INSERT INTO Details 
+    VALUES(
+    '{}',
+    '{}',
+    '{}',
+    '{}',
+    '{}',
+    '{}')
+    """.format(cid,email,PhoneNumber,socialhandle, address,zipcode)
+    print("Query 1",query1)
+    result1 = insertData(query1)
+    print("result1(register)",result1)
+    
+    print("kind::=>", kind)
+    if(kind=='user'):
+         #Getting uid
+        q1="""
+        SELECT Count(*)
+        FROM User
+        """
+        q1_output=executeQuery(q1)
+        print("user count: ",q1_output)
+        uid="U"+str(int(q1_output[0][0])+1)
+        
+        
+        #Inserting into Users
+        print("Inserting values into Users:",cid,uid,name,pwd,'Individual')
+        query2="""
+        INSERT INTO User
+        Values(
+            '{}',
+            '{}',
+            '{}',
+            '{}',
+            'Individial'
+        )
+        """.format(cid,uid,name,pwd)
+        print("insert user query",query2)
+        result2 = insertData(query2)
+        print("result2",result2)
+    
+    else:
+        #Getting uid
+        q1="""
+        SELECT Count(*)
+        FROM Provider
+        """
+        q1_output=executeQuery(q1)
+        print(q1_output)
+        pid="P"+str(int(q1_output[0][0])+1)
+
+
+        #Inserting into Providers
+        print("Inserting values into Providers:",pid,name,cid,pwd,3)
+        query2="""
+        INSERT INTO Provider (ProviderID,Name,ContactID,Password,Rating)
+        Values (
+            '{}',
+            '{}',
+            '{}',
+            '{}',
+            3
+         )
+        """.format(pid,name,cid,pwd)
+        print(query2)
+        result2 = insertData(query2)
+        print("result2",result2)
+
+
+    data = {}
+    if(result1=='OK' and result2=='OK'):
+        data["response"]={}
+        data["response"]["data"]={}
+        data["response"]["message"] = "OK"
+        data["response"]["data"]["kind"]=kind
+        if(kind=='user'):
+            data["response"]["data"]["user"]=uid
+        else:
+            data["response"]["data"]["user"]=pid
+
+    else:
+        data["response"]={}
+        data["response"]["data"]={}
+        data["response"]["message"] = "failed"
+        data["response"]["data"]["kind"]=kind
+        if(kind=='user'):
+            data["response"]["data"]["user"]=uid
+        else:
+            data["response"]["data"]["user"]=pid
+    
+    print(data)
+    return data
+
 @app.route("/login",methods=["POST"])
 def login():                                        # READ
     print("In login api")
@@ -205,6 +326,7 @@ def login():                                        # READ
     name = inp["name"]
     pwd = inp["password"]
     kind = inp["kind"]
+    print(name, pwd, kind)
 
     if(kind=="user"):
         query = "select UserID from User where UserID=\"{}\" and Password=\"{}\"".format(name,pwd)
@@ -213,20 +335,20 @@ def login():                                        # READ
         query = "select ProviderID from Provider where ProviderID=\"{}\" and Password=\"{}\"".format(name,pwd)
         row = executeQuery(query)
 
+    print(row)
+
+    data = {}
     if not row:
-        data = {}
         data["response"]={}
         data["response"]["data"]={}
         data["response"]["message"] = "FAIL"
-        data["response"]["data"]["columns"]=["FoodID","Kind"]
         data["response"]["data"]["rows"] = {}
     else:
-        data = {}
         data["response"]={}
         data["response"]["data"]={}
         data["response"]["message"] = "OK"
-        data["response"]["data"]["columns"]=["FoodID","Kind"]
-        data["response"]["data"]["rows"] = row
+        data["response"]["data"]["kind"]=kind
+        data["response"]["data"]["user"]=name
     return data
 
 @app.route('/getOfferDetail',methods=['POST'])

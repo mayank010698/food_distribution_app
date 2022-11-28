@@ -18,7 +18,11 @@ function App() {
   // return <Main />
   // return <Auth />
   return (
+    
     <BrowserRouter>
+      {localStorage.getItem("userID") ? <div style={{ position: "absolute", top:"20px", right:"20px", borderStyle:"solid", borderWidth:"2px", padding:"10px" }}>
+        {localStorage.getItem("userID")}
+      </div> : ""}
       <Routes>
           <Route index path="/" element={<Main />} />
           <Route path="food-prover-main" element={<FoodProviderMain />} />

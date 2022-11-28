@@ -37,13 +37,13 @@ const theme = createTheme();
 export default function Auth() {
 
   const [isLogin, setIsLogin] = React.useState(true)
-  const [name, setName] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [address, setAddress] = React.useState('')
-  const [zip, setZip] = React.useState('')
-  const [social, setSocial] = React.useState('')
-  const [phone, setPhone] = React.useState('')
-  const [email, setEmail] = React.useState('')
+  const [name, setName] = React.useState('Rugz')
+  const [password, setPassword] = React.useState('Rugz')
+  const [address, setAddress] = React.useState('RugzAddress')
+  const [zip, setZip] = React.useState('RugzZip')
+  const [social, setSocial] = React.useState('RugzSocial')
+  const [phone, setPhone] = React.useState('99999999')
+  const [email, setEmail] = React.useState('rugz@gmail.com')
   const [userKind, setUserKind] = React.useState("user")
   const navigate = useNavigate();
 
@@ -59,8 +59,13 @@ export default function Auth() {
     console.log(data);
     if(isLogin) {
       const response = await loginApi(data)
-      console.log(response)
-      navigate("/");
+      console.log(response.data.response)
+      if(response.data.response.message == "OK"){
+        navigate("/");
+      }
+      else{
+        alert("Error: Auth Failed")
+      }
     }
     else{
       data = {
@@ -70,14 +75,19 @@ export default function Auth() {
           "kind": userKind,
           "email": email,
           "PhoneNumber": phone,
-          "socialHandle": social,
-          "address": address,
-          "zipcode": zip
+          "SocialHandle": social,
+          "Address": address,
+          "ZipCode": zip
         }
       }
       const response = await registerApi(data)
+      if(response.data.response.message == "OK"){
+        navigate("/");
+      }
+      else{
+        alert("Error: Auth Failed")
+      }
       console.log(response)
-      navigate("/");
     }
 
   };

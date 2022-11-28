@@ -2,12 +2,13 @@ import axios from 'axios'
 import { CLIENT_URL } from './../const'
 
 export const registerApi = async(data)=> {
+    console.log(data)
     const result = await axios.post(`${CLIENT_URL}/register`,data)
-    const userRow = result.data.response.data.rows
+    const userRow = result.data.response.data
     console.log(userRow)
     // TODO
-    localStorage.setItem('userKind', result.data.response.data.userKind)
-    localStorage.setItem('userID', userRow[0][0])
+    localStorage.setItem('userKind', result.data.response.data.kind)
+    localStorage.setItem('userID', result.data.response.data.user)
 
     return result
 }
@@ -17,12 +18,10 @@ export const loginApi = async(data)=> {
     console.log("Will call loginApi next")
     const result = await axios.post(`${CLIENT_URL}/login`,data)
     console.log("Just called loginApi")
-    // JSON.stringify, JSON.parse
-    const userRow = result.data.response.data.rows
-    console.log(userRow)
+    console.log(result)
     // TODO
-    localStorage.setItem('userKind', result.data.response.data.userKind)
-    localStorage.setItem('userID', userRow[0][0])
+    localStorage.setItem('userKind', result.data.response.data.kind)
+    localStorage.setItem('userID', result.data.response.data.user)
 
     // localStorage.setItem('token', result.data.token)
     return result
