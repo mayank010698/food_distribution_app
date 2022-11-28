@@ -358,7 +358,7 @@ def searchfooditem():
     data=request.json
     description=data['inputData']['description']
     query="""
-    SELECT * FROM Offers 
+    SELECT ProviderId, FoodId, Item_Description, CurQuantity FROM Offers 
     WHERE Item_Description LIKE '%{}%' and Date(ODate)='2020-12-13' and CurQuantity>0 limit 200;
     """.format(description)
     a=executeQuery(query)

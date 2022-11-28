@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button'
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { foodOptionsApi, getOffersAll } from './functions';
+import { foodOptionsApi, getOffersAll, searchApi } from './functions';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -63,9 +63,17 @@ function Main() {
     // k -> kind
   }
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     // axios request here
     // Input is "searchInput" variable
+    let data = {
+      "inputData": {
+        description: searchInput
+      }
+    }
+    const response = await searchApi(data)
+    setRows(response.data.response.data.rows)
+    setCols(response.data.response.data.cols)
   }
 
   return (

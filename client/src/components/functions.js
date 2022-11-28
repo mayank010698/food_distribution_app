@@ -28,6 +28,17 @@ export const loginApi = async(data)=> {
     return result
 }
 
+export const searchApi = async(data)=> {
+    // return
+    console.log("Will call search next")
+    const result = await axios.post(`${CLIENT_URL}/search`,data)
+    console.log("Just called searchApi")
+    const rows = result.data.response
+    console.log(rows)
+    return result
+}
+
+
 export const foodOptionsApi = async()=> {
     const result = await axios.post(`${CLIENT_URL}/foodOptions`)
     return result.data.response.data.rows
