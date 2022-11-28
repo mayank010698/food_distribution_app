@@ -32,22 +32,27 @@ function App() {
         </div>
         <div>
           <Link to="/">
-            <HomeIcon />
+            <HomeIcon /> Home
           </Link>
         </div>
-        <div>
+        {localStorage.getItem("userKind") == "provider" && <div>
           <Link to="/food-prover-main">
-            <GridViewIcon />
+            <GridViewIcon /> Dashboard
           </Link>
-        </div>
-        <div>
+        </div>}
+        {localStorage.getItem("userKind") == "provider" && <div>
+          <Link to="/food-form">
+            <GridViewIcon /> Add Food
+          </Link>
+        </div>}
+        {localStorage.getItem("userKind") == "user" && <div>
           <Link to="/orders">
-            <AddShoppingCartIcon />
+            <AddShoppingCartIcon /> Orders
           </Link>
-        </div>
+        </div>}
         <div>
           <Link to="/feedback">
-            <ChatIcon />
+            <ChatIcon /> Feedback
           </Link>
         </div>
 
