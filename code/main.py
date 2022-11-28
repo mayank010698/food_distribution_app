@@ -11,7 +11,7 @@ def executeQuery(query):
         host="34.173.238.55",
         user="root",
         password="12341234",
-        database="dabest")
+        database="dabest3")
 
     # Get a cursor
     cur = cnx.cursor()
@@ -90,7 +90,8 @@ def getOffers():                                            # READ
     inp = request.json["inputData"]
     provider_id = inp["searchInput"]
 
-    query = "select * from Offers where ProviderID=\""  + provider_id +"\" and Date(ODate)='2020-12-13' and Quantity>0"
+    query = "select * from Offers where ProviderID=\""  + provider_id +"\" and Date(ODate)='2020-12-14' and Quantity>0"
+    print(query)
     final_data = executeQuery(query)
 
     data = {}
@@ -104,7 +105,7 @@ def getOffers():                                            # READ
 @app.route("/getOffersAll",methods=['POST'])
 def getOffersAll():                                         # READ
 
-    query = "select * from Offers where Date(ODate)='2020-12-13' and Quantity>0 limit 200 ;"
+    query = "select ProviderID,FoodID,Item_Description,ODate, CurQuantity from Offers where Date(ODate)='2020-12-13' and CurQuantity>0 limit 200 ;"
     final_data = executeQuery(query)
 
     data = {}
@@ -118,21 +119,25 @@ def getOffersAll():                                         # READ
 
 def insertData(query):
     cnx = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
+        host="34.173.238.55",
         user="root",
-        password="root",
-        database="dabest")
+        password="12341234",
+        database="dabest3")
 
     # Get a cursor
     cur = cnx.cursor()
 
     # Execute a query
     try:
+        print("In try")
         cur.execute(query)
         cnx.commit()
+        print(query)
+        print("---")
         return "OK"
-    except:
+    except Exception as e:
+        print("errrr")
+        print(e)
         return "FAIL"
     
     # Print databases
@@ -151,9 +156,9 @@ def addItem():                                  # CREATE
     food_id = inp["foodID"]
     item_descript = inp["item_description"]
     Quantity = int(inp["quantity"])
-    curdate = '2020-12-13 00:00:00'
+    curdate = '2020-12-14 00:00:00'
 
-    query = "INSERT INTO Offers Values(\"{}\",\"{}\",\"{}\",\"{}\",\"{}\")".format(provider_id,food_id,item_descript,curdate,Quantity)
+    query = "INSERT INTO Offers Values(\"{}\",\"{}\",\"{}\",\"{}\",\"{}\",\"{}\")".format(provider_id,food_id,item_descript,curdate,Quantity,Quantity)
     print(query)
     result = insertData(query)
     
@@ -176,7 +181,7 @@ def addItem():                                  # CREATE
 @app.route('/foodOptions', methods=['GET','POST'])
 def foodOptions():                                                  # COMPLEX QUERY 2
     if request.method=='POST':
-        body = executeQuery("Select f.FoodID, f.Kind, count(*) as availableOptions From FoodType f natural join Offers o group by f.Kind Order by o.ODate;")
+        body = executeQuery("Select f.FoodID, f.Kind, count(*) as availableOptions From FoodType f natural join Offers o group by f.FoodID,f.Kind;")
         final_data = []
         for row in body:
             d = []
@@ -195,6 +200,7 @@ def foodOptions():                                                  # COMPLEX QU
 
 @app.route("/login",methods=["POST"])
 def login():                                        # READ
+    print("In login api")
     inp = request.json["inputData"]
     name = inp["name"]
     pwd = inp["password"]
@@ -222,14 +228,16 @@ def login():                                        # READ
         data["response"]["data"]["columns"]=["FoodID","Kind"]
         data["response"]["data"]["rows"] = row
     return data
+
 @app.route('/getOfferDetail',methods=['POST'])
-def getOfferDetail():                                   # READ
+def getOfferDetail():
+    print("getOfferDetail called")                                   # READ
     data=request.json
     provider_id=data['inputData']['ProviderID']
     food_id=data['inputData']['FoodID']
     query="""
-    SELECT p.ProviderID, p.Name, o.Quantity, o.Item_Description
-    FROM Offers o JOIN Provider p on O.ProviderID=p.ProviderID
+    SELECT p.ProviderID, p.Name, o.CurQuantity, o.Item_Description
+    FROM Offers o JOIN Provider p on o.ProviderID=p.ProviderID
     WHERE o.ProviderID='{}' AND o.FoodID='{}' AND DATE(o.ODate)="2020-12-13";
     """.format(provider_id,food_id)
 
@@ -305,6 +313,9 @@ def placeOrder():
     WHERE FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-13'
     """.format(str(int(quantity)),food_id,provider_id)
     
+
+    print("311")
+    print(query)
     insertData(query)
     
     query="""SELECT Quantity from Offers 
@@ -361,4 +372,4 @@ def searchfooditem():
     return b
 
 
-app.run(host='0.0.0.0', port='4000', debug=True)
+app.run(host='0.0.0.0', port='8000', debug=True)
