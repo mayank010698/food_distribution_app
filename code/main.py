@@ -8,10 +8,11 @@ CORS(app)
 
 def executeQuery(query):
     cnx = mysql.connector.connect(
-        host="34.173.238.55",
+        host="127.0.0.1",
+        port=3306,
         user="root",
         password="12341234",
-        database="dabest")
+        database="dabest3")
 
     # Get a cursor
     cur = cnx.cursor()
@@ -34,6 +35,19 @@ def executeQuery(query):
         final_data.append(d)
     return final_data
 
+
+@app.route("/getSP",methods=['POST']) 
+def StoredProcedure():
+    print("called Stored Procedure")
+    final_data = executeQuery("call FO")
+    data = {}
+    data["response"]={}
+    data["response"]["data"]={}
+    data["response"]["message"] = "OK"
+    data["response"]["data"]["columns"]=["ProviderID","Month","WastageGrade","RatingGrade","Efficiency"]
+    data["response"]["data"]["rows"] = final_data
+
+    return json.dumps(data)
 
 @app.route("/getWaste",methods=['POST'])                                    # COMPLEX QUERY 1 
 def getWaste():
@@ -121,8 +135,8 @@ def insertData(query):
         host="127.0.0.1",
         port=3306,
         user="root",
-        password="root",
-        database="dabest")
+        password="12341234",
+        database="dabest3")
 
     # Get a cursor
     cur = cnx.cursor()
