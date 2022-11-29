@@ -81,11 +81,12 @@ def getWaste():
 
 
 
-@app.route("/getOrder",methods=['POST'])                # READ
+@app.route("/getOrders",methods=['POST'])                # READ
 def getOrder():
     inp = request.json["inputData"]
-    user_id = inp["UserID"]
-    query = "SELECT * FROM Orders WHERE UserID ="+user_id
+    user_id = inp["userID"]
+    query = "SELECT * FROM Orders WHERE UserID='"+user_id+"'"
+    print(query)
     
     final_data = executeQuery(query)
 
@@ -95,7 +96,7 @@ def getOrder():
     data["response"]["message"] = "OK"
     data["response"]["data"]["columns"]=["OrderID","UserID","ProviderID","FoodID","Quantity","ODate"]
     data["response"]["data"]["rows"] = final_data
-
+    print(data)
     return json.dumps(data)
 
 
@@ -104,7 +105,8 @@ def getOffers():                                            # READ
     inp = request.json["inputData"]
     provider_id = inp["searchInput"]
 
-    query = "select * from Offers where ProviderID=\""  + provider_id +"\" and Date(ODate)='2020-12-13' and Quantity>0"
+    query = "select * from Offers where ProviderID=\""  + provider_id +"\" and Date(ODate)='2020-12-14' and Quantity>0"
+    print(query)
     final_data = executeQuery(query)
 
     data = {}
@@ -118,7 +120,7 @@ def getOffers():                                            # READ
 @app.route("/getOffersAll",methods=['POST'])
 def getOffersAll():                                         # READ
 
-    query = "select * from Offers where Date(ODate)='2020-12-13' and Quantity>0 limit 200 ;"
+    query = "select ProviderID,FoodID,Item_Description,ODate, CurQuantity from Offers where Date(ODate)='2020-12-14' and CurQuantity>0 limit 200 ;"
     final_data = executeQuery(query)
 
     data = {}
@@ -132,8 +134,7 @@ def getOffersAll():                                         # READ
 
 def insertData(query):
     cnx = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
+        host="34.173.238.55",
         user="root",
         password="12341234",
         database="dabest3")
@@ -143,10 +144,15 @@ def insertData(query):
 
     # Execute a query
     try:
+        print("In try")
         cur.execute(query)
         cnx.commit()
+        print(query)
+        print("---")
         return "OK"
-    except:
+    except Exception as e:
+        print("errrr")
+        print(e)
         return "FAIL"
     
     # Print databases
@@ -165,9 +171,9 @@ def addItem():                                  # CREATE
     food_id = inp["foodID"]
     item_descript = inp["item_description"]
     Quantity = int(inp["quantity"])
-    curdate = '2020-12-13 00:00:00'
+    curdate = '2020-12-14 00:00:00'
 
-    query = "INSERT INTO Offers Values(\"{}\",\"{}\",\"{}\",\"{}\",\"{}\")".format(provider_id,food_id,item_descript,curdate,Quantity)
+    query = "INSERT INTO Offers Values(\"{}\",\"{}\",\"{}\",\"{}\",\"{}\",\"{}\")".format(provider_id,food_id,item_descript,curdate,Quantity,Quantity)
     print(query)
     result = insertData(query)
     
@@ -190,7 +196,7 @@ def addItem():                                  # CREATE
 @app.route('/foodOptions', methods=['GET','POST'])
 def foodOptions():                                                  # COMPLEX QUERY 2
     if request.method=='POST':
-        body = executeQuery("Select f.FoodID, f.Kind, count(*) as availableOptions From FoodType f natural join Offers o group by f.Kind Order by o.ODate;")
+        body = executeQuery("Select f.FoodID, f.Kind, count(*) as availableOptions From FoodType f natural join Offers o group by f.FoodID,f.Kind;")
         final_data = []
         for row in body:
             d = []
@@ -207,12 +213,135 @@ def foodOptions():                                                  # COMPLEX QU
 
         return data
 
-@app.route("/login",methods=["POST"])
-def login():                                        # READ
+#Register API
+@app.route('/register',methods=['POST'])
+def register():
     inp = request.json["inputData"]
     name = inp["name"]
     pwd = inp["password"]
     kind = inp["kind"]
+    email = inp["email"]
+    PhoneNumber=inp["PhoneNumber"]
+    socialhandle=inp["SocialHandle"]
+    address=inp["Address"]
+    zipcode=inp["ZipCode"]
+    print(name, pwd, kind,email,PhoneNumber, socialhandle,address,zipcode)
+    
+    #Getting cid
+    q1="""
+    SELECT Count(*)
+    FROM Details
+    """
+    q1_output=executeQuery(q1)
+    print(q1_output)
+    cid=int(q1_output[0][0])+1
+
+
+    #Inserting into Details
+    print("Inserting values into details:",cid,email,PhoneNumber,socialhandle,address,zipcode)
+    # return None
+    query1="""
+    INSERT INTO Details 
+    VALUES(
+    '{}',
+    '{}',
+    '{}',
+    '{}',
+    '{}',
+    '{}')
+    """.format(cid,email,PhoneNumber,socialhandle, address,zipcode)
+    print("Query 1",query1)
+    result1 = insertData(query1)
+    print("result1(register)",result1)
+    
+    print("kind::=>", kind)
+    if(kind=='user'):
+         #Getting uid
+        q1="""
+        SELECT Count(*)
+        FROM User
+        """
+        q1_output=executeQuery(q1)
+        print("user count: ",q1_output)
+        uid="U"+str(int(q1_output[0][0])+1)
+        
+        
+        #Inserting into Users
+        print("Inserting values into Users:",cid,uid,name,pwd,'Individual')
+        query2="""
+        INSERT INTO User
+        Values(
+            '{}',
+            '{}',
+            '{}',
+            '{}',
+            'Individial'
+        )
+        """.format(cid,uid,name,pwd)
+        print("insert user query",query2)
+        result2 = insertData(query2)
+        print("result2",result2)
+    
+    else:
+        #Getting uid
+        q1="""
+        SELECT Count(*)
+        FROM Provider
+        """
+        q1_output=executeQuery(q1)
+        print(q1_output)
+        pid="P"+str(int(q1_output[0][0])+1)
+
+
+        #Inserting into Providers
+        print("Inserting values into Providers:",pid,name,cid,pwd,3)
+        query2="""
+        INSERT INTO Provider (ProviderID,Name,ContactID,Password,Rating)
+        Values (
+            '{}',
+            '{}',
+            '{}',
+            '{}',
+            3
+         )
+        """.format(pid,name,cid,pwd)
+        print(query2)
+        result2 = insertData(query2)
+        print("result2",result2)
+
+
+    data = {}
+    if(result1=='OK' and result2=='OK'):
+        data["response"]={}
+        data["response"]["data"]={}
+        data["response"]["message"] = "OK"
+        data["response"]["data"]["kind"]=kind
+        if(kind=='user'):
+            data["response"]["data"]["user"]=uid
+        else:
+            data["response"]["data"]["user"]=pid
+
+    else:
+        data["response"]={}
+        data["response"]["data"]={}
+        data["response"]["message"] = "failed"
+        data["response"]["data"]["kind"]=kind
+        if(kind=='user'):
+            data["response"]["data"]["user"]=uid
+        else:
+            data["response"]["data"]["user"]=pid
+    
+    print(data)
+    return data
+
+@app.route("/login",methods=["POST"])
+def login():                                        # READ
+    print("In login api")
+    inp = request.json["inputData"]
+    name = inp["name"]
+    pwd = inp["password"]
+    kind = inp["kind"]
+    print(name, pwd, kind)
 
     if(kind=="user"):
         query = "select UserID from User where UserID=\"{}\" and Password=\"{}\"".format(name,pwd)
@@ -221,30 +350,32 @@ def login():                                        # READ
         query = "select ProviderID from Provider where ProviderID=\"{}\" and Password=\"{}\"".format(name,pwd)
         row = executeQuery(query)
 
+    print(row)
+
+    data = {}
     if not row:
-        data = {}
         data["response"]={}
         data["response"]["data"]={}
         data["response"]["message"] = "FAIL"
-        data["response"]["data"]["columns"]=["FoodID","Kind"]
         data["response"]["data"]["rows"] = {}
     else:
-        data = {}
         data["response"]={}
         data["response"]["data"]={}
         data["response"]["message"] = "OK"
-        data["response"]["data"]["columns"]=["FoodID","Kind"]
-        data["response"]["data"]["rows"] = row
+        data["response"]["data"]["kind"]=kind
+        data["response"]["data"]["user"]=name
     return data
+
 @app.route('/getOfferDetail',methods=['POST'])
-def getOfferDetail():                                   # READ
+def getOfferDetail():
+    print("getOfferDetail called")                                   # READ
     data=request.json
     provider_id=data['inputData']['ProviderID']
     food_id=data['inputData']['FoodID']
     query="""
-    SELECT p.ProviderID, p.Name, o.Quantity, o.Item_Description
-    FROM Offers o JOIN Provider p on O.ProviderID=p.ProviderID
-    WHERE o.ProviderID='{}' AND o.FoodID='{}' AND DATE(o.ODate)="2020-12-13";
+    SELECT p.ProviderID, p.Name, o.CurQuantity, o.Item_Description
+    FROM Offers o JOIN Provider p on o.ProviderID=p.ProviderID
+    WHERE o.ProviderID='{}' AND o.FoodID='{}' AND DATE(o.ODate)="2020-12-14";
     """.format(provider_id,food_id)
 
     b=executeQuery(query)
@@ -302,11 +433,11 @@ def placeOrder():
              {},
             '{}'
         )
-    """.format(str(int(countdetails2[0])+1),user_id,provider_id,food_id,quantity,"2020-12-13 01:48:52")
+    """.format(str(int(countdetails2[0])+1),user_id,provider_id,food_id,quantity,"2020-12-14 01:48:52")
     insertData(query)
 
     query="""SELECT Quantity from Offers 
-    where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-13'
+    where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
     """.format(food_id,provider_id)
     print(query)
 
@@ -316,13 +447,16 @@ def placeOrder():
     query="""
     UPDATE Offers
     SET CurQuantity=CurQuantity-{}
-    WHERE FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-13'
+    WHERE FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
     """.format(str(int(quantity)),food_id,provider_id)
     
+
+    print("311")
+    print(query)
     insertData(query)
     
     query="""SELECT Quantity from Offers 
-    where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-13'
+    where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
     """.format(food_id,provider_id)
     
     print('Line 336',executeQuery(query))
@@ -361,8 +495,8 @@ def searchfooditem():
     data=request.json
     description=data['inputData']['description']
     query="""
-    SELECT * FROM Offers 
-    WHERE Item_Description LIKE '%{}%' and Date(ODate)='2020-12-13' and CurQuantity>0 limit 200;
+    SELECT ProviderId, FoodId, Item_Description, CurQuantity FROM Offers 
+    WHERE Item_Description LIKE '%{}%' and Date(ODate)='2020-12-14' and CurQuantity>0 limit 200;
     """.format(description)
     a=executeQuery(query)
     response={}
@@ -375,4 +509,23 @@ def searchfooditem():
     return b
 
 
-app.run(host='0.0.0.0', port='4000', debug=True)
+@app.route('/searchByKind',methods=['POST'])                  # Search
+def searchfooditemByKind():
+    data=request.json
+    kindID=data['inputData']['kindID']
+    query="""
+    SELECT ProviderId, FoodId, Item_Description, CurQuantity FROM Offers 
+    WHERE FoodId='{}' and Date(ODate)='2020-12-14' and CurQuantity>0 limit 200;
+    """.format(kindID)
+    a=executeQuery(query)
+    response={}
+    response['message']="OK"
+    response['data']={}
+    response['data']['columns']=['ProviderId','FoodId','Item_Description','Quantity']
+    response['data']['rows']=a
+    b={}
+    b['response']=response
+    return b
+
+
+app.run(host='0.0.0.0', port='8000', debug=True)
