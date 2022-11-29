@@ -40,12 +40,53 @@ def executeQuery(query):
 def StoredProcedure():
     print("called Stored Procedure")
     final_data = executeQuery("call FO")
+    print(final_data)
+
+    wastage_provider = {}
+    wastage_month={}
+
+    rating_provider = {}
+    rating_month = {}
+    
+    for j in final_data:
+        if(j[0] not in wastage_provider):
+            wastage_provider[j[0]] = [0]*13
+            wastage_provider[j[0]][int(j[1])]=j[4]
+        else:
+            wastage_provider[j[0]][int(j[1])]=j[4]
+        
+        if(j[1] not in wastage_month):
+            wastage_month[j[1]]={}
+            wastage_month[j[1]][j[2]] = 1
+        elif(j[2] not in wastage_month[j[1]]):
+            wastage_month[j[1]][j[2]] = 1
+        else:
+            wastage_month[j[1]][j[2]]+=1
+
+    for j in final_data:
+        if(j[0] not in rating_provider):
+            rating_provider[j[0]] = [0]*13
+            rating_provider[j[0]][int(j[1])]=j[5]
+        else:
+            rating_provider[j[0]][int(j[1])]=j[5]
+        
+        if(j[1] not in rating_month):
+            rating_month[j[1]]={}
+            rating_month[j[1]][j[3]] = 1
+        elif(j[2] not in rating_month[j[1]]):
+            rating_month[j[1]][j[3]] = 1
+        else:
+            rating_month[j[1]][j[3]]+=1
+
+    
     data = {}
     data["response"]={}
     data["response"]["data"]={}
     data["response"]["message"] = "OK"
-    data["response"]["data"]["columns"]=["ProviderID","Month","WastageGrade","RatingGrade","Efficiency"]
-    data["response"]["data"]["rows"] = final_data
+    data["response"]["data"]["wastage_provider"]=wastage_provider
+    data["response"]["data"]["wastage_month"] = wastage_month
+    data["response"]["data"]["rating_provider"]=rating_provider
+    data["response"]["data"]["rating_month"] = rating_month
 
     return json.dumps(data)
 
