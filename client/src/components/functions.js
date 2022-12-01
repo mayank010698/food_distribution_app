@@ -103,6 +103,13 @@ export const submitFoodForm = async(data)=> {
     return result.data.response.data
 }
 
+export const getStats = async()=> {
+    // return
+    console.log("Will call getSP next")
+    const result = await axios.post(`${CLIENT_URL}/getSP`)
+    return result
+}
+
 export const secureRequest = async (data) => {
     return
     const sendData = {

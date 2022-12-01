@@ -12,6 +12,7 @@ import Feedback from "./components/Feedback";
 import GridViewIcon from '@mui/icons-material/GridView';
 import HomeIcon from '@mui/icons-material/Home';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import InsightsIcon from '@mui/icons-material/Insights';
 import ChatIcon from '@mui/icons-material/Chat';
 import Orders from "./components/Orders";
 
@@ -55,11 +56,17 @@ function App() {
             <ChatIcon /> Feedback
           </Link>
         </div>
+        <div>
+          <Link to="/stats">
+            <InsightsIcon /> Stats
+          </Link>
+        </div>
 
       </div> : <></>}
       <Routes>
           <Route index path="/" element={<Main />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="stats" element={<Stats />}></Route>
           <Route path="food-prover-main" element={<FoodProviderMain />} />
           <Route path="food-wastage" element={<FoodWastage />} />
           <Route path="feedback" element={<Feedback />} />
