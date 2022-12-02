@@ -40,7 +40,7 @@ export default function Auth() {
   const [name, setName] = React.useState('Rugz')
   const [password, setPassword] = React.useState('Rugz')
   const [address, setAddress] = React.useState('RugzAddress')
-  const [zip, setZip] = React.useState('RugzZip')
+  const [zip, setZip] = React.useState('1234')
   const [social, setSocial] = React.useState('RugzSocial')
   const [phone, setPhone] = React.useState('99999999')
   const [email, setEmail] = React.useState('rugz@gmail.com')
@@ -61,7 +61,9 @@ export default function Auth() {
       const response = await loginApi(data)
       console.log(response.data.response)
       if(response.data.response.message == "OK"){
-        navigate("/");
+        setTimeout(() => {
+          navigate("/");
+        }, 1500)
       }
       else{
         alert("Error: Auth Failed")
@@ -82,7 +84,9 @@ export default function Auth() {
       }
       const response = await registerApi(data)
       if(response.data.response.message == "OK"){
-        navigate("/");
+        setTimeout(() => {
+          navigate("/");
+        }, 1500)
       }
       else{
         alert("Error: Auth Failed")
@@ -208,7 +212,7 @@ export default function Auth() {
               onClick={(e) => handleSubmit(e)}
               sx={{ mt: 3, mb: 2 }}
             >
-              {isLogin ? "Sign In" : "Log In"}
+              {isLogin ? "Log In" : "Sign Up"}
             </Button>
             <Grid container>
               <Grid item xs>
@@ -219,7 +223,7 @@ export default function Auth() {
               <Grid item>
                 <div onClick={() => setIsLogin(isLogin ? false : true)}>
                   <Link variant="body2">
-                    {"Don't have an account? Sign Up"}
+                    {isLogin ? "Don't have an account? Sign Up": "Already have an account? Sign In"}
                   </Link>
                 </div>
               </Grid>

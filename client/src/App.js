@@ -13,8 +13,11 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import HomeIcon from '@mui/icons-material/Home';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import InsightsIcon from '@mui/icons-material/Insights';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ChatIcon from '@mui/icons-material/Chat';
 import Orders from "./components/Orders";
+import { useNavigate  } from "react-router-dom";
+import Logout from "./components/Logout";
 
 function App() {
   // return <AddFoodForm />
@@ -61,6 +64,14 @@ function App() {
             <InsightsIcon /> Stats
           </Link>
         </div>
+        <div>
+        <Link to="/logout">
+          <ExitToAppIcon onClick={() => {
+            localStorage.removeItem("userID")
+            localStorage.removeItem("userKind")
+          }} /> Logout
+        </Link>
+        </div>
 
       </div> : <></>}
       <Routes>
@@ -74,6 +85,7 @@ function App() {
           <Route path="offer/:id1/:id2" element={<OrderDetails />} />
           <Route path="food-wastage" element={<Stats />} />
           <Route path="auth" element={<Auth />} />
+          <Route path="logout" element={<Logout />} />
           <Route path="/food-form" element={<AddFoodForm />}>
         </Route>
       </Routes>
