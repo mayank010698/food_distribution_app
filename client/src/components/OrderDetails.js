@@ -60,6 +60,9 @@ function OrderDetails() {
     if(response.message == "OK"){
       alert("Order placed successfully")
     }
+    else{
+      alert("Invalid Order Quantity")
+    }
   }
   
     useEffect(() => {

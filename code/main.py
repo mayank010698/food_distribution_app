@@ -475,7 +475,8 @@ def placeOrder():
         )
     """.format(str(int(countdetails2[0])+1),user_id,provider_id,food_id,quantity,"2020-12-14 01:48:52")
     print("123", query)
-    insertData(query)
+    
+    status = insertData(query)
     print("AFTER")
     # query="""SELECT Quantity from Offers 
     # where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
@@ -502,7 +503,7 @@ def placeOrder():
     
     print('Line 336',executeQuery(query))
     response={}
-    response['message']="OK"
+    response['message']=status
     response['data']={}
     response['data']['OrderDetails']=int(countdetails2[0])+1
     return json.dumps(response)

@@ -60,9 +60,15 @@ export default function Auth() {
     if(isLogin) {
       const response = await loginApi(data)
       console.log(response.data.response)
+      console.log(response.data.response.data.kind)
       if(response.data.response.message == "OK"){
         setTimeout(() => {
-          navigate("/");
+          if(response.data.response.data.kind == "provider"){
+            navigate("/food-prover-main");
+          }
+          else{
+            navigate("/");
+          }
         }, 1500)
       }
       else{
@@ -85,7 +91,12 @@ export default function Auth() {
       const response = await registerApi(data)
       if(response.data.response.message == "OK"){
         setTimeout(() => {
-          navigate("/");
+          if(response.data.response.data.kind == "provider"){
+            navigate("/food-prover-main");
+          }
+          else{
+            navigate("/");
+          }
         }, 1500)
       }
       else{
