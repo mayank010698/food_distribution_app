@@ -30,7 +30,20 @@ export const options = {
     },
     title: {
       display: true,
-      text: 'Chart.js Bar Chart',
+      text: 'Distribution of Frequencies of Providers Based on Efficiency \t\t[ Efficiency = (Total Sold / Total Produced) ]',
+    },
+  },
+};
+
+export const options2 = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top',
+    },
+    title: {
+      display: true,
+      text: 'Distribution of Frequencies of Providers Based on Rating',
     },
   },
 };
@@ -57,7 +70,7 @@ function Stats() {
       let wastageProvider = data.wastage_provider
       
       setStat(buildStats1(wastageMonth))
-      setStat2(buildStats2(ratingMonth))
+      setStat2(buildStats2_tmp(ratingMonth))
 
       let tempStatDataForProvider = []
       for (const [key, value] of Object.entries(wastageProvider)) {
@@ -135,6 +148,68 @@ function Stats() {
       }
       return temp
   }
+
+  function buildStats2_tmp(wastageMonth) {
+    const monthDict = {
+      1: "Jan",
+      2:"Feb",
+      3:"March",
+      4:"April",
+      5:"May",
+      6:"June",
+      7:"July",
+      8:"August",
+      9:"Sept",
+      10:"Oct",
+      11:"Nov",
+      12:"Dec",
+    }
+
+    // 1
+    let monthNums = []
+    let labels = []
+    for (const [key, value] of Object.entries(wastageMonth)) {
+      labels.push(monthDict[parseInt(key)])
+      monthNums.push(parseInt(key))
+    }
+    monthNums.sort()
+    console.log("monthNums",monthNums)
+
+    let wastageMonthMinimum = []
+    let wastageMonthMaximum = []
+    let wastageMonthAverage = []      
+    for(var i=0; i < monthNums.length; i++){
+      wastageMonthMinimum.push(wastageMonth[monthNums[i]]["Very Poor"])
+      wastageMonthAverage.push(wastageMonth[monthNums[i]]["Average"])
+      wastageMonthMaximum.push(wastageMonth[monthNums[i]]["Very Good"])
+    }
+    console.log(labels)
+    console.log(wastageMonthMinimum)
+    console.log(wastageMonthMaximum)
+    console.log(wastageMonthAverage)
+
+    let temp = {
+      labels,
+      datasets: [
+        {
+          label: 'Very Poor',
+          data: wastageMonthMinimum,
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        },
+        {
+          label: 'Average',
+          data: wastageMonthAverage,
+          backgroundColor: 'rgba(255, 99, 60, 0.5)',
+        },
+        {
+          label: 'Very Good',
+          data: wastageMonthMaximum,
+          backgroundColor: 'rgba(255, 99, 12, 0.5)',
+        },
+      ],
+    }
+    return temp
+}
 
   function buildStats2(ratingMonth) {
     const monthDict = {
@@ -219,20 +294,21 @@ function Stats() {
 
   return (
     <div style={{height: "90vh"}}>
-      wastageMonth <br></br>
+      <h1 style={{fontSize:"40px"}}><center>Wastage and Rating Analytics</center></h1>
+      {/* wastageMonth <br></br> */}
       {stat && <Bar options={options} data={stat} />}
       <br></br><br></br><br></br>
-      ratingMonth <br></br>
-      {stat2 && <Bar options={options} data={stat2} />}
+      {/* ratingMonth <br></br> */}
+      {stat2 && <Bar options={options2} data={stat2} />}
       <br></br><br></br><br></br>
-      wastage_provider1<br></br>
+      {/* wastage_provider1<br></br>
       {stat2 && <Bar options={options} data={stat3} />}
       <br></br><br></br><br></br>
       wastage_provider2<br></br>
       {stat2 && <Bar options={options} data={stat4} />}
       <br></br><br></br><br></br>
       wastage_provider3<br></br>
-      {stat2 && <Bar options={options} data={stat5} />}
+      {stat2 && <Bar options={options} data={stat5} />} */}
     </div>
   );
 }

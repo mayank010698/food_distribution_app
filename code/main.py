@@ -39,6 +39,7 @@ def executeQuery(query):
 def StoredProcedure():
     print("called Stored Procedure")
     final_data = executeQuery("call FO")
+    print("\n\n\n\n\n")
     print(final_data)
 
     wastage_provider = {}
@@ -72,12 +73,12 @@ def StoredProcedure():
         if(j[1] not in rating_month):
             rating_month[j[1]]={}
             rating_month[j[1]][j[3]] = 1
-        elif(j[2] not in rating_month[j[1]]):
+        elif(j[3] not in rating_month[j[1]]):
             rating_month[j[1]][j[3]] = 1
         else:
             rating_month[j[1]][j[3]]+=1
 
-    
+    print(rating_month)
     data = {}
     data["response"]={}
     data["response"]["data"]={}
@@ -475,7 +476,7 @@ def placeOrder():
         )
     """.format(str(int(countdetails2[0])+1),user_id,provider_id,food_id,quantity,"2020-12-14 01:48:52")
     print("123", query)
-    
+
     status = insertData(query)
     print("AFTER")
     # query="""SELECT Quantity from Offers 
