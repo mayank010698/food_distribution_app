@@ -1,0 +1,97 @@
+DELIMITER //
+CREATE PROCEDURE FO()
+BEGIN
+DECLARE exit_loop BOOLEAN DEFAULT FALSE;
+DECLARE exit_loop2 BOOLEAN DEFAULT FALSE;
+DECLARE p_ProviderID VARCHAR(255);
+DECLARE p_Produced INT;
+DECLARE p_ExcessSold INT;
+DECLARE p_Wasted INT;
+DECLARE p_Month INT;
+DECLARE p_Efficiency REAL;
+DECLARE p_Sold INT;
+DECLARE p_Wastage VARCHAR(255);
+DECLARE p_Name VARCHAR(255);
+DECLARE p_Rating REAL;
+DECLARE p_RatingGrade VARCHAR(255);
+
+DECLARE cur CURSOR FOR
+SELECT  ProviderID,Month , 2*TotalOffered as Produced,10 as Sold, ExcessSold, 2*TotalOffered-10-ExcessSold as Wasted from 
+(select ProviderID,MONTH(ODate) as Month, sum(Quantity) as ExcessSold From Orders where Date(ODate)>'2020-01-01' and Date(ODate)<'2020-12-12' group by ProviderID,Month(ODate) )ord natural join
+(select ProviderID,MONTH(ODate) as Month , sum(Quantity) as TotalOffered From Offers  where Date(ODate)>'2020-01-01' and Date(ODate)<'2020-12-12' group by ProviderID,MONTH(ODate) 
+)off;
+
+DECLARE cur2 CURSOR FOR 
+(   
+select p.ProviderID, MONTH(Date) as "Month", p.Name, avg(f.Rating) as "Rating" from Feedback f join Provider p on p.ProviderID = f.ProviderID where Date>"2022-01-01 00:00:00"  group by p.ProviderID, MONTH(Date)
+);
+
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET exit_loop =TRUE;
+
+DROP TABLE if Exists Score;
+CREATE TABLE Score(
+    ProviderID VARCHAR(255),
+    Month INT,
+    WastageGrade VARCHAR(255),
+    RatingGrade VARCHAR(255),
+    Eff REAL,
+    Rat Real
+);
+    
+OPEN cur;
+cloop : LOOP 
+    FETCH cur INTO p_ProviderID,p_Month, p_Produced, p_Sold, p_ExcessSold,p_Wasted;
+    SET p_Efficiency = 1 - ((1.0*p_Wasted)/p_Produced);
+    IF p_Efficiency>=0.5 THEN
+        SET p_Wastage="Maximum";
+    ELSEIF p_Efficiency>=0.3 THEN
+        SET p_Wastage="Average";
+    ELSE 
+        SET p_Wastage = "Minimum";
+    END IF;
+        
+    INSERT INTO Score VALUES(
+        p_ProviderID,
+        p_Month,
+        p_Wastage,
+        "Average",
+        p_Efficiency,
+        0
+    );
+    
+    IF(exit_loop) THEN
+        LEAVE cloop;
+    END IF;
+END LOOP cloop;
+CLOSE cur;
+
+
+SET exit_loop=FALSE;
+
+OPEN cur2;
+cloop : LOOP 
+    
+    FETCH cur2 INTO p_ProviderID,p_Month, p_Name, p_Rating;
+
+    IF p_Rating>=3 THEN
+        SET p_RatingGrade="Very Good";
+    ELSEIF p_Rating>=2 THEN
+        SET p_RatingGrade= "Average";
+    ELSE
+        SET p_RatingGrade="Very Poor";
+    END IF;
+
+    UPDATE Score SET RatingGrade = p_RatingGrade WHERE ProviderID=p_ProviderID;
+    UPDATE Score SET Rat = p_Rating WHERE ProviderID=p_ProviderID;
+    
+    IF(exit_loop) THEN
+        LEAVE cloop;
+    END IF;
+END LOOP cloop;
+
+CLOSE cur2;
+
+SELECT * from Score;
+
+END //
+delimiter ;

@@ -130,17 +130,17 @@ function Stats() {
         labels,
         datasets: [
           {
-            label: 'Minimum',
+            label: 'Minimum (<0.3)',
             data: wastageMonthMinimum,
             backgroundColor: 'rgba(255, 99, 132, 0.5)',
           },
           {
-            label: 'Average',
+            label: 'Average (0.3-0.5)',
             data: wastageMonthAverage,
             backgroundColor: 'rgba(255, 99, 60, 0.5)',
           },
           {
-            label: 'Maximum',
+            label: 'Maximum (>0.5)',
             data: wastageMonthMaximum,
             backgroundColor: 'rgba(255, 99, 12, 0.5)',
           },
@@ -192,17 +192,17 @@ function Stats() {
       labels,
       datasets: [
         {
-          label: 'Very Poor',
+          label: 'Very Poor (<2)',
           data: wastageMonthMinimum,
           backgroundColor: 'rgba(255, 99, 132, 0.5)',
         },
         {
-          label: 'Average',
+          label: 'Average (2-3)',
           data: wastageMonthAverage,
           backgroundColor: 'rgba(255, 99, 60, 0.5)',
         },
         {
-          label: 'Very Good',
+          label: 'Very Good (>3)',
           data: wastageMonthMaximum,
           backgroundColor: 'rgba(255, 99, 12, 0.5)',
         },

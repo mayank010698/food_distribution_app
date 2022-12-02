@@ -1,0 +1,13 @@
+delimiter //
+CREATE TRIGGER EditOffer BEFORE INSERT ON Orders FOR EACH ROW
+BEGIN
+SET @qty = (Select CurQuantity from Offers where ProviderID = NEW.ProviderID and FoodID = NEW.Food_ID and Date(ODate)=Date(NEW.ODate));
+    if @qty - NEW.Quantity>=0 then
+   UPDATE Offers
+        SET CurQuantity = CurQuantity - New.Quantity
+    WHERE ProviderID = NEW.ProviderID and FoodID = NEW.Food_ID and Date(ODate)=Date(NEW.ODate);
+    else
+    SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT='Invalid Order Quantity';
+    end if;
+END //
+delimiter ;
