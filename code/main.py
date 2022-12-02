@@ -8,10 +8,10 @@ CORS(app)
 
 def executeQuery(query):
     cnx = mysql.connector.connect(
-        host="34.173.238.55",
+        host="127.0.0.1",
         user="root",
-        password="12341234",
-        database="dabest3")
+        password="root",
+        database="dabest")
 
     # Get a cursor
     cur = cnx.cursor()
@@ -174,10 +174,10 @@ def getOffersAll():                                         # READ
 
 def insertData(query):
     cnx = mysql.connector.connect(
-        host="34.173.238.55",
+        host="127.0.0.1",
         user="root",
-        password="12341234",
-        database="dabest3")
+        password="root",
+        database="dabest")
 
     # Get a cursor
     cur = cnx.cursor()
@@ -274,7 +274,7 @@ def register():
     """
     q1_output=executeQuery(q1)
     print(q1_output)
-    cid=int(q1_output[0][0])+1
+    cid = "C"+str(int(q1_output[0][0])+1)
 
 
     #Inserting into Details
@@ -296,7 +296,7 @@ def register():
     
     print("kind::=>", kind)
     if(kind=='user'):
-         #Getting uid
+        # Getting uid
         q1="""
         SELECT Count(*)
         FROM User
@@ -306,7 +306,7 @@ def register():
         uid="U"+str(int(q1_output[0][0])+1)
         
         
-        #Inserting into Users
+        # Inserting into Users
         print("Inserting values into Users:",cid,uid,name,pwd,'Individual')
         query2="""
         INSERT INTO User
@@ -323,7 +323,7 @@ def register():
         print("result2",result2)
     
     else:
-        #Getting uid
+        # Getting pid
         q1="""
         SELECT Count(*)
         FROM Provider
@@ -333,7 +333,7 @@ def register():
         pid="P"+str(int(q1_output[0][0])+1)
 
 
-        #Inserting into Providers
+        # Inserting into Providers
         print("Inserting values into Providers:",pid,name,cid,pwd,3)
         query2="""
         INSERT INTO Provider (ProviderID,Name,ContactID,Password,Rating)
@@ -474,26 +474,27 @@ def placeOrder():
             '{}'
         )
     """.format(str(int(countdetails2[0])+1),user_id,provider_id,food_id,quantity,"2020-12-14 01:48:52")
+    print("123", query)
     insertData(query)
+    print("AFTER")
+    # query="""SELECT Quantity from Offers 
+    # where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
+    # """.format(food_id,provider_id)
+    # print(query)
 
-    query="""SELECT Quantity from Offers 
-    where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
-    """.format(food_id,provider_id)
-    print(query)
 
+    # print('Line 322',executeQuery(query))
 
-    print('Line 322',executeQuery(query))
-
-    query="""
-    UPDATE Offers
-    SET CurQuantity=CurQuantity-{}
-    WHERE FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
-    """.format(str(int(quantity)),food_id,provider_id)
+    # query="""
+    # UPDATE Offers
+    # SET CurQuantity=CurQuantity-{}
+    # WHERE FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
+    # """.format(str(int(quantity)),food_id,provider_id)
     
 
-    print("311")
-    print(query)
-    insertData(query)
+    # print("311")
+    # print(query)
+    # insertData(query)
     
     query="""SELECT Quantity from Offers 
     where FoodID='{}' and ProviderID='{}' and Date(ODate)='2020-12-14'
